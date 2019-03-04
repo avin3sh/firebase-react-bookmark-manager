@@ -1,0 +1,27 @@
+.newBookmarkForm{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    max-width: 450px;
+}
+
+input[type="text"], select, textarea{
+    border: 1px solid #fef3f3f3;
+    font-size: 1.2rem;
+}
+
+button{
+    font-size: 1.2rem;
+    background-color: #fe4a49;
+    border: 1px solid #f3f3f3;
+    border-radius: 5px;
+}
+
+button:hover{
+    background-color: #cf3232;
+}
+
+.formLabel{
+    font-size: 1.2rem;
+    font-weight: 600;
+}
