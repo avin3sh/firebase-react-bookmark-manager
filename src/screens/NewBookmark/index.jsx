@@ -70,17 +70,43 @@ export default class index extends Component {
         const record = {
             bookmark_url: data.bookmark_url,
             bookmark_note: data.bookmark_note,
-            bookmark_time: data.bookmark_time
+            bookmark_time: data.bookmark_time,
+            bookmark_isfavorite: false,
         }
 
-        data.bookmark_list.map(category => {
-            db.collection(this.state.uid).doc('bookmarks').collection(category.value).add(record)
-                .then((docRef) => {
-                    CATEGORIES_WRITTEN++;
-                    if (CATEGORIES_WRITTEN === TOTAL_CATEGORIES) this.handleSuccess();
-                })
-        })
+        const AVAILABLE_CATEGORIES = [];
 
+        db.collection(String(this.state.uid)).doc('bookmarks').collection('bookmarkCategories').get()
+            .then(querySnapshot => {
+                querySnapshot.forEach((doc) => {
+                    AVAILABLE_CATEGORIES.push(doc.data().category_name);
+                });
+
+            })
+            .finally(() => {
+                //check if category exists
+                data.bookmark_list.map(category => {
+
+                    if (!AVAILABLE_CATEGORIES.includes(category.value)) {
+                        db.collection(String(this.state.uid)).doc('bookmarks').collection('bookmarkCategories').add({ category_name: category.value })
+                            .then((docRef) => {
+                                db.collection(String(this.state.uid)).doc('bookmarks').collection('allBookmarks').add({ record, bookmark_category: category.value })
+                                    .then((docRef) => {
+                                        CATEGORIES_WRITTEN++;
+                                        if (CATEGORIES_WRITTEN === TOTAL_CATEGORIES) this.handleSuccess();
+                                    })
+                            })
+                    } else {
+                        db.collection(String(this.state.uid)).doc('bookmarks').collection('allBookmarks').add({ record, bookmark_category: category.value })
+                            .then((docRef) => {
+                                CATEGORIES_WRITTEN++;
+                                if (CATEGORIES_WRITTEN === TOTAL_CATEGORIES) this.handleSuccess();
+                            })
+                    }
+
+
+                })
+            })
     }
 
     handleSuccess = () => {
@@ -91,24 +117,26 @@ export default class index extends Component {
     render() {
         return (
             <AppContainer>
-                <div className="newBookmarkForm">
-                    <h2 className="pageTitle">Add New Bookmark</h2>
-                    <input type="text" name="bookmark_url" placeholder="URL of bookmark" value={this.state.bookmark_url} onChange={this.handleInput} />
+                <div className="newbookmarkFormContainer">
+                    <div className="newBookmarkForm">
+                        <h2 className="pageTitle">Add New Bookmark</h2>
+                        <input type="text" name="bookmark_url" placeholder="URL of bookmark" value={this.state.bookmark_url} onChange={this.handleInput} />
 
-                    <CreatableSelect
-                        defaultValue={LISTS[0]}
-                        isMulti
-                        name="bookmark_list"
-                        options={LISTS}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        onChange={this.handleListSelect}
-                        placeholder="Bookmark List category"
-                    />
+                        <CreatableSelect
+                            defaultValue={LISTS[0]}
+                            isMulti
+                            name="bookmark_list"
+                            options={LISTS}
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            onChange={this.handleListSelect}
+                            placeholder="Bookmark List category"
+                        />
 
-                    <textarea name="bookmark_note" placeholder="Add additional notes..." value={this.state.bookmark_note} onChange={this.handleInput} />
-                    <button onClick={this.save}>Save</button>
-                    {this.state.saving && <span>Please wait...</span>}
+                        <textarea name="bookmark_note" placeholder="Add additional notes..." value={this.state.bookmark_note} onChange={this.handleInput} />
+                        <button onClick={this.save}>Save</button>
+                        {this.state.saving && <span>Please wait...</span>}
+                    </div>
                 </div>
             </AppContainer>
         )

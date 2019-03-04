@@ -1,0 +1,44 @@
+.cardContainer{
+    /* display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 1rem;
+    height: 100%;
+    width: 100%; */
+  }
+
+  .filterBar{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+  }
+
+  .bookmarkCardContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  
+  .bookmarkListContainer{
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .list-bookmarkDate{
+    color: #959ba0;
+    font-size: 0.8rem;
+  }
+  
+  .list-bookmarkUrl > .cardUrl{
+   font-size: 1.3rem;
+  }
+  
+  .list-bookmarkNote{
+    font-size: 1.2rem;
+  }

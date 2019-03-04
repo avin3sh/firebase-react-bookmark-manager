@@ -10,7 +10,10 @@ export default class index extends Component {
         super(props);
         this.state = {
             username: '',
-            user: null
+            user: null,
+            showSidebar: false,
+            height: window.innerHeight,
+            width: window.innerWidth,
         }
     }
 
@@ -27,16 +30,42 @@ export default class index extends Component {
                 this.setState({ user });
             }
         });
+
+        this.handleResize();
+        window.addEventListener('resize', this.handleResize);
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleResize);
+    }
+
+    toggleSidebar = () => {
+        this.setState({
+            showSidebar: !this.state.showSidebar
+        })
+    }
+
+    handleResize = () => this.setState({
+        height: window.innerHeight,
+        width: window.innerWidth
+    });
+
     render() {
+
         return (
             <div style={{ flex: 1 }}>
-                <div className="appContainer" firebase={firebase}>
-                    <div className="pageContainer" style={{ height: window.innerHeight - 20 }}>
-                        <div className="appSidebar" uid={this.state.user.uid}><Sidebar /></div>
-                        <div className="appContent" uid={this.state.user.uid}>{this.state.user ? this.props.children : <span>...</span>}</div>
-                    </div>
+                <div className="topMenu">
+                    <span className="topMenuButton" onClick={this.toggleSidebar}>☰</span>
+                </div>
+                <div className="appContainer">
+                    {this.state.user && (
+                        <div className="pageContainer" style={{ height: this.state.height, width: this.state.width }}>
+                            <div className="appSidebar" style={this.state.showSidebar ? { position: 'absolute', zIndex: 99, minWidth: 150, maxWidth: 300, display: 'flex', height: window.innerHeight } : null}>
+                                <Sidebar uid={this.state.user.uid} />
+                            </div>
+                            <div className="appContent">{this.props.children}</div>
+                        </div>
+                    )}
                 </div>
             </div>
         )

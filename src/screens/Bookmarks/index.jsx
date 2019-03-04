@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 
-import AppContainer from '../components/AppContainer';
+import AppContainer from '../../components/AppContainer';
+import firebase, { db, auth } from '../../configs/firebase';
 
-import firebase, { auth, db } from '../configs/firebase';
+import BookmarkCard from '../../components/BookmarkCard';
 
-import BookmarkCard from '../components/BookmarkCard';
+import './style.css';
 
-export default class Home extends Component {
+export default class index extends Component {
+
     state = {
         listname: this.props.match.params.listname,
         uid: null,
@@ -36,7 +38,7 @@ export default class Home extends Component {
 
         this.getUid()
             .then((done) => {
-                db.collection(String(this.state.uid)).doc('bookmarks').collection('allBookmarks').get()
+                db.collection(String(this.state.uid)).doc('bookmarks').collection('allBookmarks').where('bookmark_category', '==', String(this.state.listname)).get()
                     .then((querySnapshot) => {
                         const DATA = []
                         querySnapshot.forEach(function (doc) {
