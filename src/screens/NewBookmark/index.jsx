@@ -19,7 +19,7 @@ export default class index extends Component {
         super(props);
         this.state = {
             bookmark_url: '',
-            bookmark_list: ['Default'],
+            bookmark_list: [{ value: 'default', label: 'default' }],
             bookmark_note: '',
             new_bookmark_list: '',
             uid: null,
@@ -123,7 +123,6 @@ export default class index extends Component {
                         <input type="text" name="bookmark_url" placeholder="URL of bookmark" value={this.state.bookmark_url} onChange={this.handleInput} />
 
                         <CreatableSelect
-                            defaultValue={LISTS[0]}
                             isMulti
                             name="bookmark_list"
                             options={LISTS}
